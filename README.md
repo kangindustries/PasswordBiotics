@@ -1,2 +1,2 @@
-# Password-Checker
+# PasswordBiotics
 A simple, robust password checker.

@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PasswordBiotics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&family=Google+Sans+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:          #f8f9fc;
+      --surface:     #ffffff;
+      --surface-2:   #f1f3f8;
+      --border:      #e2e5ed;
+      --text:        #1a1d27;
+      --muted:       #6b7280;
+      --accent:      #1a73e8;
+      --accent-hover:#1558c0;
+      --weak-bg:     #fdecea;
+      --weak-text:   #c5221f;
+      --okay-bg:     #fef7e0;
+      --okay-text:   #b06000;
+      --strong-bg:   #e6f4ea;
+      --strong-text: #137333;
+      --instant-col: #c5221f;
+      --fast-col:    #b06000;
+      --moderate-col:#7b5800;
+      --slow-col:    #137333;
+      --sans:    'Google Sans', sans-serif;
+      --display: 'Google Sans Display', sans-serif;
+      --mono:    'Google Sans Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .header { margin-bottom: 24px; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .brand-name {
+      font-family: var(--display);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .tagline {
+      font-size: 18px;
+      color: var(--muted);
+      margin-left: 0;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .card-body { padding: 28px; }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .input-wrap input::placeholder {
+      color: #b0b6c3;
+      font-family: var(--sans);
+    }
+
+    .input-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.12);
+    }
+
+    .btn-submit {
+      margin-top: 14px;
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 2px 8px rgba(26,115,232,0.3);
+    }
+
+    .btn-submit:active { transform: scale(0.98); }
+
+    .divider { height: 1px; background: var(--border); }
+
+    .results {
+      padding: 28px;
+      animation: fadeUp 0.3s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .strength-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 14px;
+      border-radius: 99px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .badge.weak   { background: var(--weak-bg);   color: var(--weak-text); }
+    .badge.okay   { background: var(--okay-bg);   color: var(--okay-text); }
+    .badge.strong { background: var(--strong-bg); color: var(--strong-text); }
+
+    .score-wrap { flex: 1; }
+
+    .score-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .score-track {
+      height: 6px;
+      background: var(--surface-2);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.5s cubic-bezier(.22,1,.36,1);
+    }
+
+    .score-fill.weak   { background: var(--weak-text); }
+    .score-fill.okay   { background: var(--okay-text); }
+    .score-fill.strong { background: var(--strong-text); }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .rec-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+
+    .rec-list li {
+      font-size: 13.5px;
+      color: var(--text);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      line-height: 1.5;
+    }
+
+    .no-rec {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--strong-text);
+      background: var(--strong-bg);
+      border: 1px solid rgba(19,115,51,0.15);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 24px;
+    }
+
+    .crack-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .crack-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .crack-table thead tr { background: var(--surface-2); }
+
+    .crack-table th {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 9px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .crack-table td {
+      font-size: 13px;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      color: var(--text);
+    }
+
+    .crack-table tr:last-child td { border-bottom: none; }
+    .crack-table tbody tr:hover { background: var(--surface-2); }
+
+    .time-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .time-pill.instant  { background: var(--weak-bg);   color: var(--instant-col); }
+    .time-pill.fast      { background: #fff3e0;           color: var(--fast-col); }
+    .time-pill.moderate { background: #fffde7;           color: var(--moderate-col); }
+    .time-pill.slow      { background: var(--strong-bg); color: var(--slow-col); }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="header">
+    <div class="brand">
+      <h1 class="brand-name">PasswordBiotics</h1>
+    </div>
+    <p class="tagline">How strong is your password?</p>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="POST" id="pwForm">
+        <div class="field">
+          <label for="password">Enter a password</label>
+          <div class="input-wrap">
+            <input type="password" id="password" name="password" required
+                   autocomplete="off" spellcheck="false" placeholder="Type your password…">
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Analyse Password →</button>
+      </form>
+    </div>
+
+    {% if score is not none %}
+    <div class="divider"></div>
+    <div class="results">
+
+      <div class="strength-row">
+        <span class="badge {{ category | lower }}">
+          {% if category == "Weak" %}✕{% elif category == "Okay" %}~{% else %}✓{% endif %}
+          {{ category }}
+        </span>
+        <div class="score-wrap">
+          <div class="score-label">Score: {{ score }}/4</div>
+          <div class="score-track">
+            <div class="score-fill {{ category | lower }}"
+                 style="width: {{ (score / 4 * 100) | round | int }}%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Recommendations</div>
+      {% if feedback %}
+        <ul class="rec-list">
+          {% for item in feedback %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="no-rec">✓ No issues found.</div>
+      {% endif %}
+
+      {% if crack_times %}
+        <div class="section-title">Estimated Crack Times</div>
+        <div class="crack-table-wrap">
+          <table class="crack-table">
+            <thead>
+              <tr>
+                <th>Attack Scenario</th>
+                <th>Time to Crack</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in crack_times %}
+              <tr>
+                <td>{{ row.scenario }}</td>
+                <td><span class="time-pill {{ row.severity }}">{{ row.time }}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+</body>
+</html>
